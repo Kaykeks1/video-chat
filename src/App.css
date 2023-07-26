@@ -4,11 +4,16 @@
 
 .waiting-room {
   padding: 20px 50px;
-  background-color: #F1F1F1;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-image: url('./images/waiting1.jpg');
+  background-position: 	center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: white;
+  position: relative;
 }
 
 .header {
@@ -16,6 +21,7 @@
   height: 8%;
   display: flex;
   align-items: center;
+  z-index: 1;
 }
 
 .header-left {
@@ -39,21 +45,41 @@
 .waiting-container {
   display: grid;
   gap: 20px;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto 600px;
   grid-template-rows: 1fr 1fr;
   height: 90%;
+  z-index: 1;
 }
 
-.schedule, .camera, .join-meeting {
+.camera, .join-meeting {
   text-align: center;
-  box-shadow: rgb(154, 154, 154);
-  background-color: white;
   border-radius: 8px;
 }
 
-.schedule {
+.side-content {
   grid-row-start: 1;
   grid-row-end: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.side-content h1 {
+  margin-bottom: 40px;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.side-content p {
+  font-weight: 300;
+}
+.side-content div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 400px;
 }
 
 .camera {
@@ -100,7 +126,7 @@
 
 .waiting-video-controls .control .control-container .fore-ground-hover {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   left: 0;
   top: 0;
   width: 100%;
@@ -127,6 +153,16 @@
   padding: 50px;
 }
 
+.waiting-room .overlay{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .3;
+  background-color: #111111;
+}
+
 .join-form {
   margin-top: 50px;
   display: flex;
@@ -138,17 +174,29 @@
   padding: 0px 10px;
   font-size: 16px;
   text-align: center;
+  background-color: transparent;
+  border: 1px solid #BA53FF;
+  color: white;
+  border-radius: 8px;
 }
 
 .join-form input[type=submit] {
   height: 50px;
-  background-color: black;
+  background-color: #BA53FF;
   color: white;
   margin-top: 20px;
   border: 0;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
+  border-radius: 8px;
+  transition: background-color .3s ease, color .3s ease;
+  font-weight: bold;
+}
+
+.join-form input[type=submit]:hover {
+  background-color: white;
+  color: #BA53FF;
 }
 
 @media (max-width: 1000px) {
@@ -159,15 +207,15 @@
     grid-template-columns: auto;
     grid-template-rows: auto auto auto;
   }
-  .camera {
+  .side-content {
     grid-row-start: 1;
     grid-row-end: 2;
   }
-  .join-meeting {
+  .camera {
     grid-row-start: 2;
     grid-row-end: 3;
   }
-  .schedule {
+  .join-meeting {
     grid-row-start: 3;
     grid-row-end: 4;
   }

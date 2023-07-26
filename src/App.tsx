@@ -81,21 +81,26 @@ function App() {
   return (
     <div className="app">
       <div className='waiting-room'>
+        <div className="overlay"></div>
         <div className='header'>
           <div className='header-left'>
             <img src={video_chat} className='header-icon' />
-            <h1 className='header-title'>CHAT</h1>
+            <h1 className='header-title'>Peer Chat</h1>
           </div>
           <div>{time} | {date}</div>
         </div>
         <div className='waiting-container'>
-          {/* create schedule */}
-          <div className='schedule'>
-            <h1>Upcoming meeting</h1>
+          {/* side content */}
+          <div className='side-content'>
+            {/* <h1>Upcoming meeting</h1> */}
+            <div>
+              <h1>Join a friend & chat</h1>
+              <p>Peer chat is a real time peer-to-peer communication software that lets you connect and chat with anyone from anywhere.</p>
+            </div>
           </div>
           {/* camera view */}
           <div className='camera'>
-            <video className="waiting-video" id="waiting-video" autoPlay playsInline></video>
+            <video className="waiting-video" muted id="waiting-video" autoPlay playsInline></video>
             <div className='waiting-video-controls'>
               <div className='control mic' onClick={() => toggleCameraControls('audio')}>
                 <div className='control-container'>
@@ -121,7 +126,7 @@ function App() {
           </div>
           {/* create/join meeting */}
           <div className='join-meeting'>
-            <h1>Create or Join a meeting</h1>
+            <h1>Enter room name :</h1>
             <form className='join-form' onSubmit={joinRoom}>
               <input
                 type="text"
