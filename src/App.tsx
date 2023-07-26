@@ -8,8 +8,9 @@ import mic_on from './images/svg-icons/mic_on.svg';
 import video_off from './images/svg-icons/video_off.svg';
 import video_on from './images/svg-icons/video_on.svg';
 
-interface streamType {
+interface StreamType {
   getTracks: Function
+  getVideoTracks: Function
 }
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
   const time = format(today, 'p');
   const [form, setForm] = useState({ name: '' });
   const [cameraControls, setCameraControls] = useState({ audioOn: true, videoOn: true });
-  const [stream, setStream] = useState<streamType>();
+  const [stream, setStream] = useState<StreamType>();
   let navigate = useNavigate();
 
 
@@ -32,6 +33,10 @@ function App() {
   }
   useEffect(() => {
     console.log('render')
+    createStream()
+  }, [])
+
+  const createStream = () => {
     navigator.mediaDevices.getUserMedia(constraints).then((waitingStream) => {
       const x = document.getElementById('waiting-video') as any;
       if (x) {
@@ -40,7 +45,7 @@ function App() {
         setStream(waitingStream);
       }
     })
-  }, [])
+  }
 
   const joinRoom = (e: any) => {
     e.preventDefault();
@@ -53,18 +58,23 @@ function App() {
   }
 
   const toggleCameraControls = (control: string) => {
-    if (stream) {
-      let track = stream.getTracks().find((track: any) => track.kind === control)
-      switch(control) {
-        case 'audio':
-          track.enabled = !cameraControls.audioOn
-          setCameraControls({ ...cameraControls, audioOn: !cameraControls.audioOn })
-          break;
-        case 'video':
-          track.enabled = !cameraControls.videoOn
-          setCameraControls({ ...cameraControls, videoOn: !cameraControls.videoOn })
-          break;
-      }
+    if (!stream) return
+    let track = stream.getTracks().find((track: any) => track.kind === control)
+    if (!track) return
+    switch(control) {
+      case 'audio':
+        track.enabled = !cameraControls.audioOn
+        setCameraControls({ ...cameraControls, audioOn: !cameraControls.audioOn })
+        break;
+      case 'video':
+        track.enabled = !cameraControls.videoOn
+        if (cameraControls.videoOn) {
+          track.stop()
+        } else {
+          createStream()
+        }
+        setCameraControls({ ...cameraControls, videoOn: !cameraControls.videoOn })
+        break;
     }
   }
 
