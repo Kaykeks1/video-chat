@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import videoControlsReducer from './features/videoControlsSlice'
+import videoStreamReducer from './features/videoStreamSlice'
 
 const store = configureStore({
   reducer: {
     videoControls: videoControlsReducer,
+    videoStream: videoStreamReducer,
   },
 })
 
