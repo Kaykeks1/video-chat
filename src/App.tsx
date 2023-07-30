@@ -10,23 +10,21 @@ import video_on from './images/svg-icons/video_on.svg';
 import VideoControl from './components/video-control/VideoControl';
 import { useAppSelector, useAppDispatch } from './hooks'
 import { toggleMicStatus, toggleVideoStatus, selectMicStatus, selectVideoStatus } from './features/videoControlsSlice'
-
-interface StreamType {
-  getTracks: Function
-  getVideoTracks: Function
-}
+import { setStream, selectStream } from './features/videoStreamSlice'
+import VideoPlayer from './components/video-player/VideoPlayer';
 
 function App() {
   const today = new Date();
   const date = format(today, 'MMM dd');
   const time = format(today, 'p');
   const [form, setForm] = useState({ name: '' });
-  const [stream, setStream] = useState<StreamType>();
+  const [deviceNotFound, setDeviceNotFound] = useState(false);
   let navigate = useNavigate();
 
   // redux
   const micStatus = useAppSelector(selectMicStatus)
   const videoStatus = useAppSelector(selectVideoStatus)
+  const stream = useAppSelector(selectStream)
   const dispatch = useAppDispatch()
 
 
@@ -49,8 +47,11 @@ function App() {
       if (x) {
         x.srcObject = waitingStream;
         console.log(typeof waitingStream)
-        setStream(waitingStream);
+        dispatch(setStream(waitingStream));
       }
+    }).catch(e => {
+      console.log(e)
+      setDeviceNotFound(true)
     })
   }
 
@@ -107,7 +108,7 @@ function App() {
 
           {/* camera view */}
           <div className='camera'>
-            <video className="waiting-video" muted id="waiting-video" autoPlay playsInline></video>
+            <VideoPlayer deviceNotFound={deviceNotFound} />
             <div className='waiting-video-controls'>
               <VideoControl
                 handleClick={() => toggleCameraControls('audio')}
