@@ -43,9 +43,9 @@ function App() {
 
   const createStream = () => {
     navigator.mediaDevices.getUserMedia(constraints).then((waitingStream) => {
-      const x = document.getElementById('waiting-video') as any;
-      if (x) {
-        x.srcObject = waitingStream;
+      const waitingVideo = document.getElementById('waiting-video') as any;
+      if (waitingVideo) {
+        waitingVideo.srcObject = waitingStream;
         console.log(typeof waitingStream)
         dispatch(setStream(waitingStream));
       }
