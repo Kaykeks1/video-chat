@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import ErrorPage from "./error-page";
 import Room from './pages/room/Room';
+import { socket, WebsocketProvider } from './contexts/WebsocketContext';
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,9 @@ const root = ReactDOM.createRoot(
 root.render(
   // <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <WebsocketProvider value={socket}>
+        <RouterProvider router={router} />
+      </WebsocketProvider>
     </Provider>
   // </React.StrictMode>
 );
