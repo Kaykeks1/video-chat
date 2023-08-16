@@ -15,6 +15,7 @@ import { useContext, useState, useRef } from 'react';
 import { WebsocketContext } from '../../contexts/WebsocketContext';
 import { setStream, selectStream, updateStreamTracks } from '../../features/videoStreamSlice';
 import VideoPlayer from '../../components/video-player/VideoPlayer';
+import { useNavigate } from 'react-router-dom';
 
 const constraints = {
   video: true,
@@ -67,6 +68,7 @@ export default function Room({}) {
   const [peerConnection, setPeerConnection] = useState<PeerConnectionType>();
   const [remoteStream, setRemoteStream] = useState<RemoteStreamType>();
   const [offer, setOffer] = useState();
+  let navigate = useNavigate();
 
   // redux
   const micStatus = useAppSelector(selectMicStatus)
@@ -266,8 +268,11 @@ export default function Room({}) {
 
   const toggleCameraControls = async (control: string) => {
     if (!stream) return
-    let track = stream.getTracks().find((track: any) => track.kind === control)
-    if (!track) return
+    let track
+    if (control === 'audio' || control === 'video') {
+      track = stream.getTracks().find((track: any) => track.kind === control)
+      if (!track) return
+    }
     // console.log({track})
     // if (!track) {
     //   const a = control === 'audio' ? true : micStatus;
@@ -300,6 +305,13 @@ export default function Room({}) {
         }
         // dispatch(toggleVideoStatus())
         // break;
+      case 'leave':
+        stream.getTracks().forEach((track: any) => {
+          track.enabled = false
+          track.stop()
+        })
+        navigate(`/`)
+        break;
     }
   }
 
