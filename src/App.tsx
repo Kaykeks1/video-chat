@@ -1,7 +1,7 @@
 import './App.css';
 import video_chat from './images/video_chat.svg';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mic_off from './images/svg-icons/mic_off.svg';
 import mic_on from './images/svg-icons/mic_on.svg';
@@ -18,6 +18,7 @@ function App() {
   const date = format(today, 'MMM dd');
   const time = format(today, 'p');
   const [form, setForm] = useState({ name: '' });
+  const [showWarning, setShowWarning] = useState(false);
   const [deviceNotFound, setDeviceNotFound] = useState(false);
   let navigate = useNavigate();
 
@@ -26,7 +27,6 @@ function App() {
   const videoStatus = useAppSelector(selectVideoStatus)
   const stream = useAppSelector(selectStream)
   const dispatch = useAppDispatch()
-
 
   let constraints = {
     // video: {
@@ -38,7 +38,9 @@ function App() {
   }
   useEffect(() => {
     console.log('render')
-    createStream()
+    if (!stream) {
+      createStream()
+    }
   }, [])
 
   const createStream = () => {
@@ -57,6 +59,10 @@ function App() {
 
   const joinRoom = (e: any) => {
     e.preventDefault();
+    if (!videoStatus) {
+      setShowWarning(true)
+      return
+    }
     const roomName = form.name;
     navigate(`/chat-room?room=${roomName}`)
   }
@@ -79,6 +85,7 @@ function App() {
         if (videoStatus) {
           track.stop()
         } else {
+          setShowWarning(false)
           createStream()
         }
         dispatch(toggleVideoStatus())
@@ -135,6 +142,9 @@ function App() {
                 value={form.name}
                 onChange={handleNameChange}
               />
+              {
+                showWarning && <p className='warning'>Turn on camera</p>
+              }
               <input type="submit" value="Join" />
             </form>
           </div>
