@@ -13,6 +13,11 @@ import { toggleMicStatus, toggleVideoStatus, selectMicStatus, selectVideoStatus 
 import { setStream, selectStream } from './features/videoStreamSlice'
 import VideoPlayer from './components/video-player/VideoPlayer';
 
+interface StreamType {
+  getTracks: Function
+  getVideoTracks: Function
+}
+
 function App() {
   const today = new Date();
   const date = format(today, 'MMM dd');
@@ -37,24 +42,31 @@ function App() {
     audio: true,
   }
   useEffect(() => {
-    console.log('render')
     if (!stream) {
       createStream()
+    } else {
+      addStream('waiting-video', stream)
     }
   }, [])
 
   const createStream = () => {
     navigator.mediaDevices.getUserMedia(constraints).then((waitingStream) => {
-      const waitingVideo = document.getElementById('waiting-video') as any;
-      if (waitingVideo) {
-        waitingVideo.srcObject = waitingStream;
-        console.log(typeof waitingStream)
+      const videoElement = addStream('waiting-video', waitingStream)
+      if (videoElement) {
         dispatch(setStream(waitingStream));
       }
     }).catch(e => {
       console.log(e)
       setDeviceNotFound(true)
     })
+  }
+
+  const addStream = (videoElementId: string, videoStream: StreamType) => {
+    const videoElement = document.getElementById(videoElementId) as any;
+    if (videoElement) {
+      videoElement.srcObject = videoStream;
+    }
+    return videoElement
   }
 
   const joinRoom = (e: any) => {
@@ -102,7 +114,7 @@ function App() {
             <img src={video_chat} className='header-icon' />
             <h1 className='header-title'>Peer Chat</h1>
           </div>
-          <div>{time} | {date}</div>
+          <p className='app-date'>{time} <span>|</span> {date}</p>
         </div>
         <div className='waiting-container'>
           {/* side content */}
