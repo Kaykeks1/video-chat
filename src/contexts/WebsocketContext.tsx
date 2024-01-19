@@ -1,6 +1,8 @@
 import { createContext } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-export const socket = io('http://localhost:3001');
+const url: string = process.env.REACT_APP_BASE_API_URL || '';
+
+export const socket = io(url);
 export const WebsocketContext = createContext<Socket>(socket);
 export const WebsocketProvider = WebsocketContext.Provider;
